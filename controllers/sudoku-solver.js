@@ -9,6 +9,7 @@ class SudokuSolver {
   validate(puzzleString) {
     if (puzzleString.length !== 81) throw new Error("Expected puzzle to be 81 characters long");
     if (!/[.1-9]{81}/.test(puzzleString)) throw new Error("Invalid characters in puzzle");
+    return true;
   }
 
   transformPuzzleString(puzzleString) {
