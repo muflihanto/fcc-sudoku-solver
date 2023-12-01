@@ -8,11 +8,12 @@ module.exports = function (app) {
   app.route("/api/check").post((req, res) => {
     try {
       let { puzzle, coordinate, value } = req.body;
-      value = parseInt(value);
       if (!puzzle || !coordinate || !value) return res.json({ error: "Required field(s) missing" });
       solver.validate(puzzle);
-      if (!/[a-i][1-9]/i.test(coordinate)) return res.json({ error: "Invalid coordinate" });
-      if (value < 1 || value > 9) return res.json({ error: "Invalid value" });
+      if (coordinate.length !== 2 || !/[a-i][1-9]/i.test(coordinate))
+        return res.json({ error: "Invalid coordinate" });
+      value = parseInt(value);
+      if (isNaN(value) || value < 1 || value > 9) return res.json({ error: "Invalid value" });
 
       const rowIndex = coordinate[0].toUpperCase().charCodeAt() - 65;
       const colIndex = Number(coordinate[1]) - 1;
@@ -21,6 +22,9 @@ module.exports = function (app) {
       let result = {
         valid: true,
       };
+
+      const currentCell = parseInt(puzzleArr[rowIndex][colIndex]);
+      if (currentCell !== 0 && currentCell === value) return res.json(result);
 
       if (!solver.checkRowPlacement(puzzleArr, rowIndex, value)) {
         result = {
