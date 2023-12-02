@@ -58,12 +58,22 @@ class SudokuSolver {
     return true;
   }
 
-  /**
-   * FIXME:
-   * "1.5..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.377"
-   * should return false
-   */
-  solve(puzzleArr) {
+  isSolvable(puzzleArr) {
+    // Validate input numbers
+    for (let r = 0; r < 9; r++) {
+      for (let c = 0; c < 9; c++) {
+        const value = puzzleArr[r][c];
+        puzzleArr[r][c] = 0;
+        if (value !== 0 && !this.isSafe(puzzleArr, r, c, value)) return false;
+        puzzleArr[r][c] = value;
+      }
+    }
+    return true;
+  }
+
+  solve(puzzleArr, noValidate) {
+    if (!noValidate && !this.isSolvable(puzzleArr)) return false;
+
     let row = -1;
     let col = -1;
     let isEmpty = true;
@@ -89,7 +99,7 @@ class SudokuSolver {
     for (let num = 1; num <= 9; num++) {
       if (this.isSafe(puzzleArr, row, col, num)) {
         puzzleArr[row][col] = num;
-        if (this.solve(puzzleArr)) {
+        if (this.solve(puzzleArr, true)) {
           return puzzleArr;
         } else {
           // Replace it

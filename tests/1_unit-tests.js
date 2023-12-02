@@ -197,12 +197,13 @@ suite("Unit Tests", () => {
           .solve(puzzleArr)
           .map((el) => el.join(""))
           .join("");
-        assert.strictEqual(result, puzzle[1], "Puzzle solution is incorrect");
+        assert.isString(result, "Valid puzzle strings should pass the solver");
       }
       done();
     });
-    // TODO: Invalid puzzle strings fail the solver
+    // Invalid puzzle strings fail the solver
     test("Invalid puzzle strings fail the solver", function (done) {
+      // Invalid row, column and region
       assert.strictEqual(
         solver.solve(
           solver.transformPuzzleString(
@@ -212,8 +213,43 @@ suite("Unit Tests", () => {
         false,
         "Invalid puzzle string solution should return false",
       );
+      // Invalid row and column
+      assert.strictEqual(
+        solver.solve(
+          solver.transformPuzzleString(
+            "52.91372.3...8.5.9.9.25..8.68.47.23...95..46.7.4.....5.2.......4..8916..85.72...3",
+          ),
+        ),
+        false,
+        "Invalid puzzle string solution should return false",
+      );
+      // Invalid column
+      assert.strictEqual(
+        solver.solve(
+          solver.transformPuzzleString(
+            "6.839.7.575.....964..1.......16.29846.9.312.7..754.....62..5.78.8...3.2...492...1",
+          ),
+        ),
+        false,
+        "Invalid puzzle string solution should return false",
+      );
       done();
     });
-    // TODO: Solver returns the expected solution for an incomplete puzzle
+    // Solver returns the expected solution for an incomplete puzzle
+    test("Solver returns the expected solution for an incomplete puzzle", function (done) {
+      for (let puzzle of puzzlesAndSolutions) {
+        const puzzleArr = solver.transformPuzzleString(puzzle[0]);
+        const result = solver
+          .solve(puzzleArr)
+          .map((el) => el.join(""))
+          .join("");
+        assert.strictEqual(
+          result,
+          puzzle[1],
+          "Solver should returns the expected solution for an incomplete puzzle",
+        );
+      }
+      done();
+    });
   });
 });
