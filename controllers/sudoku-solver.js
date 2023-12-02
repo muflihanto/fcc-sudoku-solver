@@ -58,6 +58,11 @@ class SudokuSolver {
     return true;
   }
 
+  /**
+   * FIXME:
+   * "1.5..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.377"
+   * should return false
+   */
   solve(puzzleArr) {
     let row = -1;
     let col = -1;

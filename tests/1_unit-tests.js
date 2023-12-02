@@ -189,8 +189,31 @@ suite("Unit Tests", () => {
     });
   });
   suite("Solver tests", () => {
-    // TODO: Valid puzzle strings pass the solver
+    // Valid puzzle strings pass the solver
+    test("Valid puzzle strings pass the solver", function (done) {
+      for (let puzzle of puzzlesAndSolutions) {
+        const puzzleArr = solver.transformPuzzleString(puzzle[0]);
+        const result = solver
+          .solve(puzzleArr)
+          .map((el) => el.join(""))
+          .join("");
+        assert.strictEqual(result, puzzle[1], "Puzzle solution is incorrect");
+      }
+      done();
+    });
     // TODO: Invalid puzzle strings fail the solver
+    test("Invalid puzzle strings fail the solver", function (done) {
+      assert.strictEqual(
+        solver.solve(
+          solver.transformPuzzleString(
+            "1.5..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.377",
+          ),
+        ),
+        false,
+        "Invalid puzzle string solution should return false",
+      );
+      done();
+    });
     // TODO: Solver returns the expected solution for an incomplete puzzle
   });
 });
