@@ -91,10 +91,83 @@ suite("Functional Tests", () => {
     });
   });
   suite("/api/check route tests", () => {
-    // TODO: Check a puzzle placement with all fields: POST request to /api/check
-    // TODO: Check a puzzle placement with single placement conflict: POST request to /api/check
-    // TODO: Check a puzzle placement with multiple placement conflicts: POST request to /api/check
-    // TODO: Check a puzzle placement with all placement conflicts: POST request to /api/check
+    const url = "/api/check";
+    // Check a puzzle placement with all fields: POST request to /api/check
+    test("Check a puzzle placement with all fields: POST request to /api/check", (done) => {
+      chai
+        .request(server)
+        .keepOpen()
+        .post(url)
+        .send({
+          puzzle:
+            "1.5..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.",
+          coordinate: "A2",
+          value: 3,
+        })
+        .end(function (err, res) {
+          assert.equal(res.status, 200);
+          const result = JSON.parse(res.text);
+          assert.deepEqual(result, { valid: true });
+          done();
+        });
+    });
+    // Check a puzzle placement with single placement conflict: POST request to /api/check
+    test("Check a puzzle placement with single placement conflict: POST request to /api/check", (done) => {
+      chai
+        .request(server)
+        .keepOpen()
+        .post(url)
+        .send({
+          puzzle:
+            "1.5..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.",
+          coordinate: "A2",
+          value: 8,
+        })
+        .end(function (err, res) {
+          assert.equal(res.status, 200);
+          const result = JSON.parse(res.text);
+          assert.deepEqual(result, { valid: false, conflict: ["row"] });
+          done();
+        });
+    });
+    // Check a puzzle placement with multiple placement conflicts: POST request to /api/check
+    test("Check a puzzle placement with multiple placement conflicts: POST request to /api/check", (done) => {
+      chai
+        .request(server)
+        .keepOpen()
+        .post(url)
+        .send({
+          puzzle:
+            "1.5..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.",
+          coordinate: "A2",
+          value: 1,
+        })
+        .end(function (err, res) {
+          assert.equal(res.status, 200);
+          const result = JSON.parse(res.text);
+          assert.deepEqual(result, { valid: false, conflict: ["row", "region"] });
+          done();
+        });
+    });
+    // Check a puzzle placement with all placement conflicts: POST request to /api/check
+    test("Check a puzzle placement with all placement conflicts: POST request to /api/check", (done) => {
+      chai
+        .request(server)
+        .keepOpen()
+        .post(url)
+        .send({
+          puzzle:
+            "1.5..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.",
+          coordinate: "A2",
+          value: 2,
+        })
+        .end(function (err, res) {
+          assert.equal(res.status, 200);
+          const result = JSON.parse(res.text);
+          assert.deepEqual(result, { valid: false, conflict: ["row", "column", "region"] });
+          done();
+        });
+    });
     // TODO: Check a puzzle placement with missing required fields: POST request to /api/check
     // TODO: Check a puzzle placement with invalid characters: POST request to /api/check
     // TODO: Check a puzzle placement with incorrect length: POST request to /api/check
