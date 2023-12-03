@@ -8,7 +8,8 @@ module.exports = function (app) {
   app.route("/api/check").post((req, res) => {
     try {
       let { puzzle, coordinate, value } = req.body;
-      if (!puzzle || !coordinate || !value) return res.json({ error: "Required field(s) missing" });
+      if (puzzle === undefined || coordinate === undefined || value === undefined)
+        return res.json({ error: "Required field(s) missing" });
       solver.validate(puzzle);
       if (coordinate.length !== 2 || !/[a-i][1-9]/i.test(coordinate))
         return res.json({ error: "Invalid coordinate" });
